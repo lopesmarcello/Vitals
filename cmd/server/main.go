@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/lopesmarcello/vitals/internal/handlers"
+	"github.com/lopesmarcello/vitals/views"
 )
 
 func main() {
@@ -15,12 +16,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// /check?url=https://google.com
-	r.Get("/check", handlers.AnalyzeURL)
-
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Vitals"))
+		views.Home().Render(r.Context(), w)
 	})
+
+	// /check?url=https://google.com
+	r.Post("/check", handlers.AnalyzeURL)
 
 	fmt.Println("Starting server on port :8080")
 	http.ListenAndServe(":8080", r)

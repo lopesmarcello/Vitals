@@ -1,14 +1,20 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/lopesmarcello/vitals/internal/analyzer"
+	"github.com/lopesmarcello/vitals/views"
 )
 
 func AnalyzeURL(w http.ResponseWriter, r *http.Request) {
-	urlParam := r.URL.Query().Get("url")
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Error to parse form", http.StatusBadRequest)
+		return
+	}
+
+	urlParam := r.FormValue("url")
+
 	if urlParam == "" {
 		http.Error(w, "Missing 'url' query parameter", http.StatusBadRequest)
 		return
@@ -19,7 +25,5 @@ func AnalyzeURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(stats)
+	views.Results(stats).Render(r.Context(), w)
 }

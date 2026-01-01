@@ -39,7 +39,7 @@ type LinkHealth struct {
 }
 
 type FullReport struct {
-	Netwok      *Stats         `json:"network"`
+	Network     *Stats         `json:"network"`
 	Browser     *BrowserResult `json:"browser"`
 	LinksHealth []LinkHealth   `json:"links_health"`
 }
@@ -79,7 +79,7 @@ func Analyze(ctx context.Context, url string) (*FullReport, error) {
 	linkResults := checkLinks(browser.Links)
 
 	return &FullReport{
-		Netwok:      netStats,
+		Network:     netStats,
 		Browser:     browser,
 		LinksHealth: linkResults,
 	}, nil
