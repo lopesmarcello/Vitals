@@ -14,7 +14,7 @@ func AnalyzeURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	stats, err := analyzer.AnalyzeNetwork(urlParam)
+	stats, err := analyzer.Analyze(r.Context(), urlParam)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

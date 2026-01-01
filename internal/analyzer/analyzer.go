@@ -1,20 +1,102 @@
 package analyzer
 
 import (
+	"context"
 	"crypto/tls"
+	_ "embed"
+	"encoding/json"
 	"net/http"
 	"net/http/httptrace"
 	"time"
+
+	"github.com/chromedp/chromedp"
 )
 
+//go:embed script.js
+var browserScript string
+
 type Stats struct {
-	URL           string
-	DNSLookup     time.Duration // Time to resolve IP
-	TCPConnection time.Duration // Time to stablish TCP Connection
-	TLSHandshake  time.Duration // Time to negotiate HTTPS Security
-	TTFB          time.Duration // Time from sending req to receive to first byte
-	TotalTime     time.Duration
-	StatusCode    int
+	URL           string        `json:"url"`
+	DNSLookup     time.Duration `json:"dns_lookup"`     // Time to resolve IP
+	TCPConnection time.Duration `json:"tcp_connection"` // Time to stablish TCP Connection
+	TLSHandshake  time.Duration `json:"tls_handshake"`  // Time to negotiate HTTPS Security
+	TTFB          time.Duration `json:"ttfb"`           // Time from sending req to receive to first byte
+	TotalTime     time.Duration `json:"total_time"`
+	StatusCode    int           `json:"status_code"`
+}
+
+type BrowserResult struct {
+	FCP   float64  `json:"fcp"`
+	Links []string `json:"links"`
+}
+
+type FullReport struct {
+	Netwok  *Stats         `json:"network"`
+	Browser *BrowserResult `json:"browser"`
+}
+
+func Analyze(ctx context.Context, url string) (*FullReport, error) {
+	var (
+		netStats *Stats
+		netErr   error
+		browser  *BrowserResult
+		brErr    error
+	)
+
+	done := make(chan bool)
+
+	go func() {
+		netStats, netErr = AnalyzeNetwork(url)
+		done <- true
+	}()
+
+	go func() {
+		browser, brErr = AnalyzeBrowser(ctx, url)
+		done <- true
+	}()
+
+	// wait for both
+	<-done
+	<-done
+
+	if netErr != nil {
+		return nil, netErr
+	}
+
+	if brErr != nil {
+		return nil, brErr
+	}
+
+	return &FullReport{
+		Netwok:  netStats,
+		Browser: browser,
+	}, nil
+}
+
+func AnalyzeBrowser(parentContext context.Context, targetURL string) (*BrowserResult, error) {
+	ctx, cancel := chromedp.NewContext(parentContext)
+	defer cancel()
+
+	ctx, cancel = context.WithTimeout(ctx, 2*time.Minute)
+	defer cancel()
+
+	var result BrowserResult
+	var jsonString string
+
+	err := chromedp.Run(ctx,
+		chromedp.Navigate(targetURL),
+		chromedp.WaitVisible("body", chromedp.ByQuery),
+		chromedp.EvaluateAsDevTools(browserScript, &jsonString),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal([]byte(jsonString), &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
 
 func AnalyzeNetwork(targetURL string) (*Stats, error) {
