@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptrace"
+	"sync"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -30,9 +31,17 @@ type BrowserResult struct {
 	Links []string `json:"links"`
 }
 
+type LinkHealth struct {
+	URL        string        `json:"url"`
+	StatusCode int           `json:"status_code"`
+	Duration   time.Duration `json:"duration"`
+	Error      string        `json:"error,omitempty"`
+}
+
 type FullReport struct {
-	Netwok  *Stats         `json:"network"`
-	Browser *BrowserResult `json:"browser"`
+	Netwok      *Stats         `json:"network"`
+	Browser     *BrowserResult `json:"browser"`
+	LinksHealth []LinkHealth   `json:"links_health"`
 }
 
 func Analyze(ctx context.Context, url string) (*FullReport, error) {
@@ -67,9 +76,12 @@ func Analyze(ctx context.Context, url string) (*FullReport, error) {
 		return nil, brErr
 	}
 
+	linkResults := checkLinks(browser.Links)
+
 	return &FullReport{
-		Netwok:  netStats,
-		Browser: browser,
+		Netwok:      netStats,
+		Browser:     browser,
+		LinksHealth: linkResults,
 	}, nil
 }
 
@@ -166,4 +178,46 @@ func AnalyzeNetwork(targetURL string) (*Stats, error) {
 	stats.TotalTime = time.Since(start)
 
 	return stats, nil
+}
+
+func checkLinks(links []string) []LinkHealth {
+	var wg sync.WaitGroup
+	results := make([]LinkHealth, len(links))
+
+	semaphore := make(chan struct{}, 10)
+
+	for i, link := range links {
+		wg.Add(1)
+
+		go func(index int, url string) {
+			defer wg.Done()
+
+			semaphore <- struct{}{}
+			defer func() { <-semaphore }()
+
+			start := time.Now()
+			client := http.Client{Timeout: 30 * time.Second}
+			resp, err := client.Head(url)
+
+			duration := time.Since(start)
+
+			health := LinkHealth{
+				URL:      url,
+				Duration: duration,
+			}
+
+			if err != nil {
+				health.Error = err.Error()
+				health.StatusCode = 0
+			} else {
+				health.StatusCode = resp.StatusCode
+				resp.Body.Close()
+			}
+
+			results[index] = health
+		}(i, link)
+	}
+
+	wg.Wait()
+	return results
 }
