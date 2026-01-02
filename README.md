@@ -4,6 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+### Live Demo
+[https://vitals-2osr.onrender.com/](https://vitals-2osr.onrender.com/)
+
 Vitals is a web performance analyzer that provides insights into your website's performance and health. It's a great tool to identify potential issues and optimize your site for a better user experience.
 
 ## How it works
