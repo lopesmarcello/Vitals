@@ -34,14 +34,14 @@ func Results(report *analyzer.FullReport) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"w-full px-10 text-left animate-fade-in\"><div class=\"mb-8 text-center\"><a href=\"/\" class=\"text-slate-400 hover:text-white text-sm font-medium transition-colors\"></a> <button type=\"button\" hx-get=\"/\" hx-target=\"#main-container\" hx-swap=\"innerHTML\" class=\"text-slate-400 hover:text-white text-sm font-medium tran ition-colors cursor-pointer\">← Analyze Another URL</button></div><div class=\"flex items-center justify-between mb-8\"><div><h2 class=\"text-sm font-medium text-slate-400 uppercase tracking-wider mb-1\">Analysis Report</h2><h1 class=\"text-3xl font-bold text-white truncate max-w-2xl\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"w-full px-10 text-left animate-fade-in\"><div class=\"mb-8 text-center\"><button type=\"button\" hx-get=\"/\" hx-target=\"#container\" hx-swap=\"innerHTML\" class=\"text-slate-400 hover:text-white text-sm font-medium tran ition-colors cursor-pointer\">← Analyze Another URL</button></div><div class=\"flex items-center justify-between mb-8\"><div><h2 class=\"text-sm font-medium text-slate-400 uppercase tracking-wider mb-1\">Analysis Report</h2><h1 class=\"text-3xl font-bold text-white truncate max-w-2xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(report.Network.URL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/results.templ`, Line: 25, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/results.templ`, Line: 19, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

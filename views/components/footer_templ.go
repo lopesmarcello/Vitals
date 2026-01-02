@@ -29,7 +29,7 @@ func Footer() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<footer class=\"border-t border-slate-800 py-8 mt-12\"><div class=\"max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm\"><p>&copy; 2024 Vitals Performance Scanner. Built with Go & Templ.</p></div></footer>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<footer class=\"border-t border-slate-800 py-8 mt-12\"><div class=\"max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm\"><p>&copy; 2026 Vitals Performance Scanner. Built with Go & Templ.</p></div></footer>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
