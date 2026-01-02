@@ -27,13 +27,14 @@ You can run Vitals locally using Docker.
 2. **Build and run the Docker container:**
 
    ```bash
-   docker-compose up -d
+   docker-compose up --build -d
    ```
 
-3. **Open your browser and go to `http://localhost:8080`**
+3. **Open your browser and go to `http://localhost:3000`**
 
 ## TODO
 
+- [ ] Turn "check links" optional
 - [ ] Centralized Configuration
 - [ ] Structured Logging
 - [ ] Comprehensive Testing
@@ -42,7 +43,6 @@ You can run Vitals locally using Docker.
 - [ ] Security Hardening
 - [ ] Observability
 - [ ] Code Quality and Refactoring
-- [ ] Turn "check links" optional
 
 ## Contributing
 
