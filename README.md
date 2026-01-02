@@ -1,6 +1,6 @@
 # Vitals ✨
 
-[![Go Version](https://img.shields.io/badge/go-1.22-blue.svg)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/go-1.25-blue.svg)](https://golang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
