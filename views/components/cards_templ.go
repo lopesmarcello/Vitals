@@ -34,14 +34,14 @@ func Cards(report *analyzer.FullReport) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-3 gap-6 mb-8\"><!-- TTFB Card --><div class=\"bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-lg relative overflow-hidden\"><div class=\"absolute top-0 right-0 p-4 opacity-10\"><svg class=\"w-16 h-16 text-cyan-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path></svg></div><p class=\"text-slate-400 text-sm font-medium mb-1\">Time to First Byte</p><p class=\"text-3xl font-bold text-white\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-up\"><!-- TTFB Card --><div class=\"bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-lg relative overflow-hidden\"><div class=\"absolute top-0 right-0 p-4 opacity-10\"><svg class=\"w-16 h-16 text-cyan-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path></svg></div><p class=\"text-slate-400 text-sm font-medium mb-1\">Time to First Byte</p><p class=\"text-3xl font-bold text-white\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(report.Network.TTFB.String())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 18, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 18, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -54,7 +54,7 @@ func Cards(report *analyzer.FullReport) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f ms", report.Browser.FCP))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 32, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 35, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -67,7 +67,7 @@ func Cards(report *analyzer.FullReport) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", len(report.LinksHealth)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 45, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/cards.templ`, Line: 50, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

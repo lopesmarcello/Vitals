@@ -13,8 +13,18 @@ templ Navbar() {
 					<span class="font-bold text-xl tracking-tight">Vitals</span>
 				</div>
 				<div class="flex gap-4">
-					<a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">New Scan</a>
-					<a href="https://github.com" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">GitHub</a>
+					<button
+						type="button"
+						hx-get="/"
+						hx-target="#container"
+						hx-swap="innerHTML"
+						class="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+					>New Scan</button>
+					<a
+						href="https://github.com/lopesmarcello/Vitals"
+						target="_blank"
+						class="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+					>GitHub</a>
 				</div>
 			</div>
 		</div>

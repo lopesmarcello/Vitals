@@ -18,7 +18,11 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		views.Home().Render(r.Context(), w)
+		if r.Header.Get("HX-Request") == "true" {
+			views.HomeContent().Render(r.Context(), w)
+		} else {
+			views.Home().Render(r.Context(), w)
+		}
 	})
 
 	// /check?url=https://google.com

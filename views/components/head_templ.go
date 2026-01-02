@@ -36,13 +36,13 @@ func Head(title string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/head.templ`, Line: 7, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/head.templ`, Line: 8, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | Vitals</title><!-- Google Fonts: Inter --><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap\" rel=\"stylesheet\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><!-- Tailwind CSS (CDN for Dev) --><script src=\"https://cdn.tailwindcss.com\"></script><script>\n\t\t\ttailwind.config = {\n\t\t\t\ttheme: {\n\t\t\t\t\textend: {\n\t\t\t\t\t\tfontFamily: {\n\t\t\t\t\t\t\tsans: ['Inter', 'sans-serif']\n\t\t\t\t\t\t},\n\t\t\t\t\t\tcolors: {\n\t\t\t\t\t\t\tslate: {\n\t\t\t\t\t\t\t\t850: '#151f32'\n\t\t\t\t\t\t\t} // Custom deep background\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t</script><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script></head>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | Vitals</title><!-- Google Fonts: Inter --><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap\" rel=\"stylesheet\"><!-- HTMX --><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><!-- Tailwind CSS (CDN for Dev) --><script src=\"https://cdn.tailwindcss.com\"></script><script>\n    tailwind.config = {\n      theme: {\n        extend: {\n          fontFamily: {sans: ['Inter', 'sans-serif']},\n          colors: {\n            slate: {850: '#151f32'}\n          },\n          animation: {\n            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',\n          },\n          keyframes: {\n            fadeInUp: {\n              '0%': {opacity: '0', transform: 'translateY(10px)'},\n              '100%': {opacity: '1', transform: 'translateY(0)'},\n            }\n          }\n        }\n      }\n    }\n  </script><script>\n    tailwind.config = {\n      theme: {\n        extend: {\n          fontFamily: {\n            sans: ['Inter', 'sans-serif']\n          },\n          colors: {\n            slate: {\n              850: '#151f32'\n            } // Custom deep background\n          }\n        }\n      }\n    }\n  </script><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script></head>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

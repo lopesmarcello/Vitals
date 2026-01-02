@@ -1,0 +1,20 @@
+package views
+
+import "github.com/lopesmarcello/vitals/views/components"
+
+templ HomeContent() {
+<div class="relative overflow-hidden min-h-screen flex flex-col justify-center" id="container">
+  <!-- Background Glow -->
+  <div
+    class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-3xl -z-10 opacity-50">
+  </div>
+  <div class="max-w-3xl mx-auto px-4 text-center" id="main-container">
+    <div class="animate-fade-in">
+      @components.Hero()
+      @components.Form()
+    </div>
+    @components.Loading()
+    @components.Badges()
+  </div>
+</div>
+}
