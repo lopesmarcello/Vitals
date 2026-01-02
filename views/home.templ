@@ -1,51 +1,18 @@
 package views
 
+import "github.com/lopesmarcello/vitals/views/components"
+
 templ Home() {
-@Layout("Home") {
-<div class="relative overflow-hidden min-h-screen flex flex-col justify-center">
-  <!-- Background Glow -->
-  <div
-    class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-3xl -z-10 opacity-50">
-  </div>
-  <div class="max-w-3xl mx-auto px-4 text-center" id="main-container">
-    <h1
-      class="text-5xl font-bold tracking-tight mb-6 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-      Check your website's pulse.
-    </h1>
-    <p class="text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
-      Instant performance analysis. Measure TTFB, DNS latency, and check the health of every link on your page.
-    </p>
-    <!-- HTMX Form -->
-    <!-- hx-post: Send data to /check -->
-    <!-- hx-target: Replace #main-container with the response -->
-    <!-- hx-indicator: Show the loading spinner while waiting -->
-    <form hx-post="/check" hx-target="#main-container" hx-swap="outerHTML" hx-indicator="#loading"
-      class="relative max-w-lg mx-auto group">
-      <div
-        class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-200">
-      </div>
-      <div class="relative flex bg-slate-800 rounded-xl p-2 shadow-2xl border border-slate-700">
-        <input type="url" name="url" placeholder="https://example.com" required
-          class="flex-1 bg-transparent border-none text-white placeholder-slate-500 focus:ring-0 px-4 py-3 outline-none" />
-        <button type="submit"
-          class="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-cyan-500/20">
-          Analyze
-        </button>
-      </div>
-    </form>
-    <!-- Loading Indicator (Hidden by default) -->
-    <div id="loading" class="htmx-indicator mt-12">
-      <div class="flex flex-col items-center gap-4">
-        <div class="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-slate-400 animate-pulse">Spinning up Chrome & Analyzing Network...</p>
-      </div>
-    </div>
-    <!-- Footer Badges -->
-    <div class="mt-12 flex justify-center gap-8 text-slate-500 text-sm font-medium">
-      <div class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Real-time</div>
-      <div class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> Headless Chrome</div>
-    </div>
-  </div>
-</div>
-}
+	@Layout("Home") {
+		<div class="relative overflow-hidden min-h-screen flex flex-col justify-center">
+			<!-- Background Glow -->
+			<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-3xl -z-10 opacity-50"></div>
+			<div class="max-w-3xl mx-auto px-4 text-center" id="main-container">
+				@components.Hero()
+				@components.Form()
+				@components.Loading()
+				@components.Badges()
+			</div>
+		</div>
+	}
 }

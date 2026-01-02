@@ -1,24 +1,25 @@
-# Stage 1: Build the Go binary
-FROM golang:1.21-alpine AS builder
+# Stage 1: Build
+# We explicitly pin Go 1.23 to satisfy the templ requirement
+FROM golang:1.23-alpine AS builder
 WORKDIR /app
 
 # Install templ
 RUN go install github.com/a-h/templ/cmd/templ@latest
 
-# Copy dependency files
+# Copy dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy source code
+# Copy source
 COPY . .
 
 # Generate templates
 RUN templ generate
 
-# Build the binary
-RUN go build -o vitals ./cmd/server/main.go
+# Build binary
+RUN CGO_ENABLED=0 GOOS=linux go build -o vitals ./cmd/server/main.go
 
-# Stage 2: The Runtime Image (Alpine + Chromium)
+# Stage 2: Runtime
 FROM alpine:latest
 
 # Install Chromium and dependencies
@@ -28,17 +29,18 @@ RUN apk add --no-cache \
     freetype \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    dumb-init
 
-# Tell Chromedp where to find Chrome
+# Environment variables for Chrome
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
 
 WORKDIR /app
 COPY --from=builder /app/vitals .
 
-# Expose the port
-EXPOSE 8080
+# Use dumb-init
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-# Run it
+# Run the app
 CMD ["./vitals"]

@@ -1,0 +1,13 @@
+package components
+
+templ Form() {
+	<form hx-post="/check" hx-target="#main-container" hx-swap="outerHTML" hx-indicator="#loading" class="relative max-w-lg mx-auto group">
+		<div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-200"></div>
+		<div class="relative flex bg-slate-800 rounded-xl p-2 shadow-2xl border border-slate-700">
+			<input type="url" name="url" placeholder="https://example.com" required class="flex-1 bg-transparent border-none text-white placeholder-slate-500 focus:ring-0 px-4 py-3 outline-none"/>
+			<button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-lg shadow-cyan-500/20">
+				Analyze
+			</button>
+		</div>
+	</form>
+}

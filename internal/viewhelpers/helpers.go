@@ -1,7 +1,7 @@
-package views
+package viewhelpers
 
-// getStatusColor returns the Tailwind classes for a given HTTP status code
-func getStatusColor(code int) string {
+// GetStatusColor returns the Tailwind classes for a given HTTP status code
+func GetStatusColor(code int) string {
 	if code >= 200 && code < 300 {
 		return "bg-green-500/10 text-green-400 border-green-500/20"
 	}

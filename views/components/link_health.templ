@@ -1,0 +1,52 @@
+package components
+
+import (
+	"fmt"
+	"github.com/lopesmarcello/vitals/internal/analyzer"
+	"github.com/lopesmarcello/vitals/internal/viewhelpers"
+)
+
+templ LinkHealth(report *analyzer.FullReport) {
+	<div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
+		<div class="px-6 py-4 border-b border-slate-700 bg-slate-800/50">
+			<h3 class="font-semibold text-white">Link Health Analysis</h3>
+		</div>
+		<div class="overflow-x-auto">
+			<table class="w-full text-left border-collapse">
+				<thead>
+					<tr class="bg-slate-900/50 text-slate-400 text-xs uppercase tracking-wider">
+						<th class="px-6 py-3 font-medium">Status</th>
+						<th class="px-6 py-3 font-medium">URL</th>
+						<th class="px-6 py-3 font-medium text-right">Response Time</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-slate-700">
+					for _, l := range report.LinksHealth {
+						<tr class="hover:bg-slate-700/30 transition-colors">
+							<td class="px-6 py-4 whitespace-nowrap">
+								<span class={ "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border " + viewhelpers.GetStatusColor(l.StatusCode) }>
+									if l.StatusCode == 0 {
+										Error
+									} else {
+										{ fmt.Sprintf("%d", l.StatusCode) }
+									}
+								</span>
+							</td>
+							<td class="px-6 py-4 max-w-md truncate text-slate-300 text-sm" title={ l.URL }>
+								<a href={ templ.SafeURL(l.URL) } target="_blank" class="hover:text-cyan-400 transition-colors">
+									{ l.URL }
+								</a>
+								if l.Error != "" {
+									<div class="text-xs text-red-400 mt-1">{ l.Error }</div>
+								}
+							</td>
+							<td class="px-6 py-4 whitespace-nowrap text-right text-sm text-slate-400 font-mono">
+								{ l.Duration.String() }
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}

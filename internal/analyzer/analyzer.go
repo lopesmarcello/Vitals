@@ -46,27 +46,45 @@ type FullReport struct {
 
 func Analyze(ctx context.Context, url string) (*FullReport, error) {
 	var (
-		netStats *Stats
-		netErr   error
-		browser  *BrowserResult
-		brErr    error
+		netStats    *Stats
+		netErr      error
+		browser     *BrowserResult
+		brErr       error
+		linksHealth []LinkHealth
+		wg          sync.WaitGroup
 	)
 
-	done := make(chan bool)
+	browserChan := make(chan *BrowserResult, 1)
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		netStats, netErr = AnalyzeNetwork(url)
-		done <- true
 	}()
 
+	wg.Add(1)
 	go func() {
-		browser, brErr = AnalyzeBrowser(ctx, url)
-		done <- true
+		defer wg.Done()
+		b, err := AnalyzeBrowser(ctx, url)
+		if err != nil {
+			brErr = err
+			close(browserChan)
+			return
+		}
+		browser = b
+		browserChan <- b
+		close(browserChan)
 	}()
 
-	// wait for both
-	<-done
-	<-done
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if browserResult, ok := <-browserChan; ok && browserResult != nil {
+			linksHealth = checkLinks(browserResult.Links)
+		}
+	}()
+
+	wg.Wait()
 
 	if netErr != nil {
 		return nil, netErr
@@ -76,12 +94,10 @@ func Analyze(ctx context.Context, url string) (*FullReport, error) {
 		return nil, brErr
 	}
 
-	linkResults := checkLinks(browser.Links)
-
 	return &FullReport{
 		Network:     netStats,
 		Browser:     browser,
-		LinksHealth: linkResults,
+		LinksHealth: linksHealth,
 	}, nil
 }
 
@@ -131,6 +147,8 @@ func AnalyzeNetwork(targetURL string) (*Stats, error) {
 		dnsDone      time.Time
 		connectStart time.Time
 		connectDone  time.Time
+		tlsStart     time.Time
+		tlsDone      time.Time
 		wroteRequest time.Time
 		firstByte    time.Time
 	)
@@ -145,6 +163,10 @@ func AnalyzeNetwork(targetURL string) (*Stats, error) {
 		// Connection (TCP) Hooks
 		ConnectStart: func(network, addr string) { connectStart = time.Now() },
 		ConnectDone:  func(network, addr string, err error) { connectDone = time.Now() },
+
+		// TLS Handshake
+		TLSHandshakeStart: func() { tlsStart = time.Now() },
+		TLSHandshakeDone:  func(state tls.ConnectionState, err error) { tlsDone = time.Now() },
 
 		// The moment it finishes sending request headers and body
 		WroteRequest: func(w httptrace.WroteRequestInfo) { wroteRequest = time.Now() },
@@ -184,6 +206,10 @@ func AnalyzeNetwork(targetURL string) (*Stats, error) {
 		stats.TCPConnection = connectDone.Sub(connectStart)
 	}
 
+	if !tlsStart.IsZero() {
+		stats.TLSHandshake = tlsDone.Sub(tlsStart)
+	}
+
 	if !wroteRequest.IsZero() && !firstByte.IsZero() {
 		stats.TTFB = firstByte.Sub(wroteRequest)
 	}
@@ -196,41 +222,40 @@ func AnalyzeNetwork(targetURL string) (*Stats, error) {
 func checkLinks(links []string) []LinkHealth {
 	var wg sync.WaitGroup
 	results := make([]LinkHealth, len(links))
-
 	semaphore := make(chan struct{}, 10)
 
 	for i, link := range links {
 		wg.Add(1)
-
 		go func(index int, url string) {
 			defer wg.Done()
-
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
-
-			start := time.Now()
-			client := http.Client{Timeout: 30 * time.Second}
-			resp, err := client.Head(url)
-
-			duration := time.Since(start)
-
-			health := LinkHealth{
-				URL:      url,
-				Duration: duration,
-			}
-
-			if err != nil {
-				health.Error = err.Error()
-				health.StatusCode = 0
-			} else {
-				health.StatusCode = resp.StatusCode
-				resp.Body.Close()
-			}
-
-			results[index] = health
+			results[index] = checkLink(url)
 		}(i, link)
 	}
 
 	wg.Wait()
 	return results
+}
+
+func checkLink(url string) LinkHealth {
+	start := time.Now()
+	client := http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Head(url)
+	duration := time.Since(start)
+
+	health := LinkHealth{
+		URL:      url,
+		Duration: duration,
+	}
+
+	if err != nil {
+		health.Error = err.Error()
+		health.StatusCode = 0
+	} else {
+		health.StatusCode = resp.StatusCode
+		resp.Body.Close()
+	}
+
+	return health
 }
