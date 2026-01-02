@@ -86,7 +86,20 @@ func Analyze(ctx context.Context, url string) (*FullReport, error) {
 }
 
 func AnalyzeBrowser(parentContext context.Context, targetURL string) (*BrowserResult, error) {
-	ctx, cancel := chromedp.NewContext(parentContext)
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", true),
+		chromedp.Flag("no-sandbox", true), // required in docker
+		chromedp.Flag("disable-gpu", true),
+		chromedp.Flag("disable-dev-shm-usage", true),
+		chromedp.Flag("disable-software-rasterizer", true),
+		chromedp.Flag("mute-audio", true),
+		chromedp.Flag("hide-scrollbars", true),
+	)
+
+	allocCtx, cancelAlloc := chromedp.NewExecAllocator(parentContext, opts...)
+	defer cancelAlloc()
+
+	ctx, cancel := chromedp.NewContext(allocCtx)
 	defer cancel()
 
 	ctx, cancel = context.WithTimeout(ctx, 2*time.Minute)
